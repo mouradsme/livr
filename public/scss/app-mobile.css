@@ -1,0 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+#main-container {
+  width: 100vw;
+  overflow: hidden;
+  overflow-y: scroll;
+  height: calc(100vh - 100px);
+  position: fixed;
+  top: 100px;
+  left: 0px;
+}
+
+.main-content {
+  padding: 7px !important;
+  margin: 0px !important;
+}
+
+.deliveries-list > .list-item {
+  grid-template-columns: 1fr 1fr 1fr;
+}/*# sourceMappingURL=app-mobile.css.map */
