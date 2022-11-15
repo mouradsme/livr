@@ -3,11 +3,11 @@
 @section('content')
 
 <div class="form">
-    <h1 class="title">Ajouter un client</h1>
+    <h1 class="title">Ajouter une boutique</h1>
     <form method="POST" action="{{ route('add-client') }}" >
         @csrf
         <div class="field">
-            <div class="label" for="lastname">Nom</div>
+            <div class="label" for="lastname">Nom du propriétaire</div>
             <div class="input">
                 <input type="text" id="lastname" name="lastname" placeholder="Nom de famille" />
             </div>
@@ -16,6 +16,12 @@
             <div class="label" for="firstnames">Prénom(s)</div>
             <div class="input">
                 <input type="text" id="firstnames" name="firstnames" placeholder="Prénom(s)" />
+            </div>
+        </div>
+        <div class="field">
+            <div class="label" for="register">N° du registre</div>
+            <div class="input">
+                <input type="text" id="register" name="register" placeholder="N° du registre" />
             </div>
         </div>
         <div class="field">

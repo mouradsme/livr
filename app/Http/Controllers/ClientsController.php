@@ -22,7 +22,8 @@ class ClientsController extends Controller
             'lastname' => 'required|min:2',
             'firstnames' => 'required|min:2',
             'address'   => 'required',
-            'phone'   => 'required'
+            'phone'   => 'required',
+            'register' => 'required'
 
         ]);
         $code = $this->generateUniqueCode();
@@ -31,6 +32,7 @@ class ClientsController extends Controller
         $Client->fullname = $request->firstnames . ', ' . $request->lastname;
         $Client->address = $request->address ?? 'N/A';
         $Client->phone = $request->phone;
+        $Client->register = $request->register;
         $Client->code = $code;
         $Client->added = \Auth::user()->id;
 

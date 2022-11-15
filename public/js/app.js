@@ -30,6 +30,7 @@ function updateProductsView() {
 
 updateCartView()
 $(function () {
+    $('select').select2();
     $('#addDelivery').on('click', function() {
 
         $.post('/add-delivery',
@@ -103,7 +104,6 @@ $(function () {
         "reader", { fps: 10, qrbox: 250 });
     html5QrcodeScanner.render(onScanSuccess);
 
-  $('select').select2();
   $('.alert-container').on('click', function () {
     $(this).fadeOut(100);
   });
