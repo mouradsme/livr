@@ -1,5 +1,5 @@
 function updateCartView() {
-    let total = window.localStorage.length
+    let total = window.localStorage.length - 1 > 0 ? window.localStorage.length : 0
     $('#cartTotal').html(total)
 }
 function updateProductsView() {
@@ -34,8 +34,7 @@ $(function () {
     $('#addDelivery').on('click', function() {
 
         $.post('/add-delivery',
-            {
-                '_token': $('meta[name=csrf-token]').attr('content'),
+            {  '_token': $('meta[name=csrf-token]').attr('content'),
                 products: JSON.stringify(window.localStorage),
                 deliverer: $('#deliverer').val(),
                 client: $('#client').val()

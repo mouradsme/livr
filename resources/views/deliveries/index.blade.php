@@ -39,7 +39,7 @@
             @handheld
 
             @elsehandheld
-            <div>{!! $DeliveryArray['created_at'] !!}</div>
+            <div>{!! date("d/m/Y H:i:s", strtotime($DeliveryArray['created_at'])) !!}</div>
             @endhandheld
             <div>
                 @if ($DeliveryArray['status'] == '1')
