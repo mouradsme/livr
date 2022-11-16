@@ -614,3 +614,11 @@ input[type=radio] {
     color: white;
 
 }
+.delivery-item {
+    display: grid;
+    grid-template-columns: 4fr 1fr 1fr;
+    &.head {
+        background-color: $brand-color;
+        color: white;
+    }
+}

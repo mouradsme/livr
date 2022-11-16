@@ -1,3 +1,4 @@
+
 function updateCartView() {
     let total = window.localStorage.length - 1 > 0 ? window.localStorage.length : 0
     $('#cartTotal').html(total)
@@ -31,9 +32,86 @@ function updateProductsView() {
 updateCartView()
 $(function () {
     $('select').select2();
+
+
+    $('.dischargeButton').on('click', function() {
+
+
+        let code = $(this).data('code')
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                let lat = position.coords.latitude
+                let long = position.coords.longitude
+                $('#dcode').val(code)
+                $('#dlatlong').val(lat + '|' + long)
+                $('#ddelivery-data').html("")
+                $.post('charge',
+                    {
+                        '_token': $('meta[name=csrf-token]').attr('content'),
+                        code: code
+                    },
+                    function(res) {
+                        let div = `<div class="delivery-item head">
+                        <div>Article</div>
+                        <div>P.U</div>
+                        <div>Quantité</div>
+                    </div>`
+                        res.forEach( item => {
+                            div += `<div class="delivery-item">
+                                <div>${item.name}</div>
+                                <div class="price">${item.rprice}</div>
+                                <div>${item.quantity}</div>
+                            </div>`
+                        })
+                        $('#ddelivery-data').html(div)
+                        MicroModal.show('discharge-modal')
+                    }
+                    )
+                });
+            }
+    })
+
+    $('.chargeButton').on('click', function() {
+
+
+        let code = $(this).data('code')
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                let lat = position.coords.latitude
+                let long = position.coords.longitude
+                $('#code').val(code)
+                $('#latlong').val(lat + '|' + long)
+                $('#delivery-data').html("")
+                $.post('charge',
+                    {
+                        '_token': $('meta[name=csrf-token]').attr('content'),
+                        code: code
+                    },
+                    function(res) {
+                        let div = `<div class="delivery-item head">
+                        <div>Article</div>
+                        <div>P.U</div>
+                        <div>Quantité</div>
+                    </div>`
+                        res.forEach( item => {
+                            div += `<div class="delivery-item">
+                                <div>${item.name}</div>
+                                <div class="price">${item.rprice}</div>
+                                <div>${item.quantity}</div>
+                            </div>`
+                        })
+                        $('#delivery-data').html(div)
+                        MicroModal.show('charge-modal')
+                    }
+                    )
+                });
+            }
+    })
     $('#addDelivery').on('click', function() {
 
-        $.post('/add-delivery',
+        $.post('add-delivery',
             {  '_token': $('meta[name=csrf-token]').attr('content'),
                 products: JSON.stringify(window.localStorage),
                 deliverer: $('#deliverer').val(),
@@ -44,8 +122,7 @@ $(function () {
                    window.localStorage.clear()
                     window.location.href = "/deliveries"
                     }
-                console.log(res)
-            }
+             }
         )
     })
     $(document).on('input', '.update-quantity', function() {

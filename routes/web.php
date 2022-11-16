@@ -42,6 +42,19 @@ Route::post('/add-user', [UsersController::class, 'addAction'])
     ->name('add-user')
     ;
 
+Route::post('/charge', [DeliveriesController::class, 'getDelivery'])
+    ->middleware('auth')
+    ->name('charge')
+    ;
+
+    Route::post('/confirm-charge', [DeliveriesController::class, 'confirmCharge'])
+    ->middleware('auth')
+    ->name('confirm-charge')
+    ;
+    Route::post('/confirm-discharge', [DeliveriesController::class, 'confirmDischarge'])
+    ->middleware('auth')
+    ->name('confirm-discharge')
+    ;
 
 Route::post('/add-delivery', [DeliveriesController::class, 'addAction'])
     ->middleware('auth')

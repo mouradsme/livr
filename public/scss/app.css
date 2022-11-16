@@ -637,4 +637,13 @@ input[type=radio] {
   width: 150px !important;
   background-color: #1e7fd9;
   color: white;
+}
+
+.delivery-item {
+  display: grid;
+  grid-template-columns: 4fr 1fr 1fr;
+}
+.delivery-item.head {
+  background-color: #1e7fd9;
+  color: white;
 }/*# sourceMappingURL=app.css.map */

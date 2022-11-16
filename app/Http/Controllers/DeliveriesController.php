@@ -8,7 +8,8 @@ use App\Models\Client;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Factory;
-
+use App\Models\DeliveryImage;
+use App\Models\DischargeProof;
 class DeliveriesController extends Controller
 {
     //
@@ -16,8 +17,13 @@ class DeliveriesController extends Controller
     public function index() {
         $Deliveries = Delivery::join('clients', 'clients.id', '=', 'deliveries.client')
         ->join('users', 'users.id', '=', 'deliveries.deliverer')
-        ->select('deliveries.*', 'clients.fullname as client_name', 'users.name as deliverer_name')
-        ->get()
+        ->select('deliveries.*', 'clients.fullname as client_name', 'users.name as deliverer_name');
+        if (\Auth::user()->role == '0') {
+
+        } else
+        $Deliveries = $Deliveries->where('deliveries.deliverer', '=', \Auth::user()->id);
+
+        $Deliveries = $Deliveries->get()
         ->groupBy(function($data) {
             return $data->code;
         });
@@ -39,6 +45,73 @@ class DeliveriesController extends Controller
         ]);
     }
 
+    public function getDelivery(Request $request) {
+        $code = $request->code;
+        $Delivery = Delivery::join('products', 'products.id', '=', 'deliveries.product')
+        ->join('users', 'users.id', '=', 'deliveries.deliverer')
+        ->join('clients', 'clients.id', '=', 'deliveries.client')
+        ->join('factories', 'factories.id', '=', 'deliveries.factory')
+        ->where('deliveries.code', '=', $code)
+        ->get(['users.name as deliverer_name', 'clients.fullname as client_name', 'products.*', 'factories.name as factory_name', 'deliveries.quantity as quantity', 'deliveries.price as rprice', 'deliveries.created_at as added_date']);
+        return $Delivery;
+    }
+
+    public function confirmDischarge(Request $request) {
+
+        $request->validate([
+            'dimage' => 'required|image|mimes:png,jpg,jpeg'
+        ]);
+       $code = $request->dcode;
+       $latlong = $request->dlatlong;
+       $issue = $request->dissue;
+
+       $imageName = time().'.dis.'.$code.'.'.$request->dimage->extension();
+
+       if ($request->dimage->move(public_path('images'), $imageName)) {
+            $DImage = new DischargeProof();
+            $DImage->image = $imageName;
+            $DImage->delivery_code = $code;
+            $DImage->latlong = $latlong;
+            $DImage->issue = $issue;
+
+            Delivery::where('code', $code)->update(array('status' => 3));
+
+            if ($DImage->save())
+                return redirect()->intended('/deliveries');
+
+            return redirect()->back()->with('fail', 'Opération Echouée!');
+        }
+
+    }
+
+
+    public function confirmCharge(Request $request) {
+
+        $request->validate([
+            'image' => 'required|image|mimes:png,jpg,jpeg'
+        ]);
+       $code = $request->code;
+       $latlong = $request->latlong;
+       $issue = $request->issue;
+
+       $imageName = time().'.'.$code.'.'.$request->image->extension();
+
+       if ($request->image->move(public_path('images'), $imageName)) {
+            $DImage = new DeliveryImage();
+            $DImage->image = $imageName;
+            $DImage->delivery_code = $code;
+            $DImage->latlong = $latlong;
+            $DImage->issue = $issue;
+
+            Delivery::where('code', $code)->update(array('status' => 2));
+
+            if ($DImage->save())
+                return redirect()->intended('/deliveries');
+
+            return redirect()->back()->with('fail', 'Opération Echouée!');
+        }
+
+    }
     public function addAction(Request $request) {
 
         $products = json_decode($request->products, 1);
